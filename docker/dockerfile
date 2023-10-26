@@ -18,9 +18,13 @@ RUN apt-get install debconf-utils
 RUN echo 'edb-as15-server edb/region select Asia' | debconf-set-selections
 RUN echo 'edb-as15-server edb/timezone select Ulaanbaatar' | debconf-set-selections
 
-COPY .\cloud_231013_platform.sql C:\Docker\Cloud\CloudDatabaseClient\dump\
+COPY cloud_231013_customer.sql /tmp/cloud_231013_platform.sql
 
 RUN apt-get update && apt-get -y install edb-as15-server 
+
+
+RUN psql -U enterprisedb cloud_customer_uat < /tmp/cloud_231013_platform.sql
+
 
 
 
@@ -41,3 +45,7 @@ ENV DB_DRIVER="mysql"
 
 # Start supervisor
 CMD ["tail", "-f", "/dev/null"]
+
+
+
+sudo docker cp cp cloud_231013_customer.sql 017cdae614e5:/tmp/
